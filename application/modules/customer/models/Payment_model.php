@@ -101,6 +101,7 @@ class Payment_model extends CI_Model
     }
     public function add_admin_notif($data)
     {
+        date_default_timezone_set('Asia/Jakarta');
         $data1 = array(
             'user_id' => $this->user_id,
             'no_order' => $data,
