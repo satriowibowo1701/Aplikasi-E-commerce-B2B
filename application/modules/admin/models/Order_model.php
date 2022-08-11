@@ -20,7 +20,13 @@ class Order_model extends CI_Model
     }
     public function count_all_orders()
     {
-        return $this->db->get('orders')->num_rows();
+        return $this->db->select('count(order_number) total_order, DAY(order_date) day')
+            ->where(array('order_status' => 4))
+            ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)', "", false)
+            ->or_where('payment_method', 2)
+            ->where('order_status', 3)
+            ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)  GROUP BY DAY(order_date)', "", false)
+            ->get('orders')->result();
     }
 
     public function get_all_orders($limit, $start, $status, $paystat)
@@ -148,8 +154,18 @@ class Order_model extends CI_Model
         $overview = $this->db->query("
             SELECT MONTH(order_date) month, COUNT(order_date) sale 
             FROM orders
-            WHERE order_date >= NOW() - INTERVAL 1 YEAR
+            WHERE  order_date >= NOW() - INTERVAL 1 YEAR  AND order_status = 4 OR  order_status = 3 AND payment_method = '2'
             GROUP BY MONTH(order_date)");
+
+        return $overview->result();
+    }
+    public function status_order_overview($interval = 1)
+    {
+        $overview = $this->db->query("
+            SELECT MONTH(order_date) month, COUNT(order_date) sale 
+            FROM orders
+            WHERE  MONTH(order_date) <= MONTH(NOW() -INTERVAL $interval  MONTH) AND order_status = 4 OR  order_status = 3 AND payment_method = '2' AND MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH)
+            GROUP BY MONTH(order_date) ORDER BY MONTH(order_date) DESC  LIMIT 2 ");
 
         return $overview->result();
     }
@@ -158,8 +174,17 @@ class Order_model extends CI_Model
     {
         $data = $this->db->query("
             SELECT  MONTH(order_date) AS month, SUM(total_price) AS income
-            FROM orders WHERE order_status = 4
+            FROM orders WHERE order_status = 4  OR order_status = 3 AND payment_method = 2
             GROUP BY MONTH(order_date)");
+
+        return $data->result();
+    }
+    public function status_income_overview($interval = 1)
+    {
+        $data = $this->db->query("
+            SELECT  MONTH(order_date) AS month, SUM(total_price) AS income
+            FROM orders WHERE  MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH) AND order_status = 4  OR order_status = 3 AND payment_method = 2 AND MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH)
+            GROUP BY MONTH(order_date) ORDER BY MONTH(order_date) DESC  LIMIT 2");
 
         return $data->result();
     }

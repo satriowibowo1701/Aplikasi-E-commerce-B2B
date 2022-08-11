@@ -111,7 +111,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <div class="col-12">
                                     <div class="form-group">
                                         <a type="button" href="<?= $dat['pdf_url'] ?>" class="form-control btn btn-primary byar" target="_blank">
-                                            <ion-icon name="information-circle-outline"></ion-icon> Cara pembayaran
+                                            <ion-icon name="information-circle-outline"></ion-icon> <?= ($dat['bank'] == 'gopay') ? 'Lihat Qris Code' : 'Cara pembayaran'; ?>
                                         </a>
                                     </div>
                                 </div>

@@ -226,7 +226,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
       },
       success: function(data) {
         //location = data;
-
+        var res = JSON.parse(data);
 
         var resultType = document.getElementById('result-type');
         var resultData = document.getElementById('result-data');
@@ -237,8 +237,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
           //resultType.innerHTML = type;
           //resultData.innerHTML = JSON.stringify(data);
         }
+        $('#result-url').val(res.url);
 
-        snap.pay(data, {
+        snap.pay(res.token, {
 
           onSuccess: function(result) {
             changeResult('success', result);

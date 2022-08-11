@@ -23,6 +23,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <form class='form' id="payment-form" action="<?php echo site_url('shop/checkout/order'); ?>" method="POST">
             <input type="hidden" name="result_type" id="result-type" value="">
             <input type="hidden" name="result_data" id="result-data" value="">
+            <input type="hidden" name="url1" id="result-url" value="">
             <div class="row justify-content-center">
                 <div class="col-xl-7 ftco-animate">
                     <h3 class="mb-4 billing-heading">Alamat Pengiriman</h3>

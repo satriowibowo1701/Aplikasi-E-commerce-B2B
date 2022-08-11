@@ -187,6 +187,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
       <div class="col-md-7 heading-section ftco-animate text-center">
         <span class="subheading">Testimoni</span>
         <h2 class="mb-4">Apa yang pelanggan kami katakan?</h2>
+        <?php if (count($reviews) == 0) : ?>
+          <div style="font-size:20px;">
+            Belum Ada Testimoni
+          </div>
+        <?php endif; ?>
       </div>
     </div>
     <div class="row ftco-animate">

@@ -65,7 +65,9 @@ class Reviews extends CI_Controller
     public function write()
     {
         $params['title'] = 'Tulis Review';
-
+        $params['total_notif'] = $this->payment->countnotif();
+        $params['notif'] = $this->payment->notifikasi();
+        $params['linkdata'] = $this->payment->linknotif();
         $review['orders'] = $this->order->all_orders();
 
         $this->load->view('header', $params);

@@ -20,6 +20,12 @@ class Customer_model extends CI_Model
         $data = $this->db->where('id', $id)->get('users')->row();
         return $data;
     }
+    public function cus2()
+    {
+        $id = get_current_user_id();
+        $data = $this->db->where('id', $id)->get('users')->row();
+        return $data;
+    }
 
     public function change_status_gateway($id, $stat, $statnotif = null)
     {

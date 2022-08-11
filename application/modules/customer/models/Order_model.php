@@ -114,7 +114,7 @@ class Order_model extends CI_Model
 
     public function all_orders()
     {
-        return $this->db->where('user_id', $this->user_id)->order_by('order_date', 'DESC')->get('orders')->result();
+        return $this->db->where(array('user_id' => $this->user_id))->where(array('payment_method' => 1, 'order_status' => 4))->or_where(array('user_id' => $this->user_id))->where(array('payment_method' => 2, 'order_status' => 3))->or_where(array('user_id' => $this->user_id))->where(array('payment_method' => 3, 'order_status' => 4))->order_by('order_date', 'DESC')->get('orders')->result();
     }
     public function updatenotifcancel($no_order)
     {

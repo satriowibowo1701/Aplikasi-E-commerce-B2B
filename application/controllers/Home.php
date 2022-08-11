@@ -20,6 +20,7 @@ class Home extends CI_Controller
         $products['best_deal'] = $this->product->best_deal_product();
         $products['reviews'] = $this->review->get_all_reviews();
 
+
         get_header($params);
         get_template_part('home', $products);
         get_footer();

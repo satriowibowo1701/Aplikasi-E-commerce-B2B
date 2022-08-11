@@ -417,7 +417,11 @@ class Email1 extends CI_Controller
             'crlf'    => "\r\n",
             'newline' => "\r\n"
         ];
-        $send_to = $this->customer->cus($user_id)->email;
+        if ($user_id != NULL) {
+            $send_to = $this->customer->cus($user_id)->email;
+        } else {
+            $send_to = $this->customer->cus2()->email;
+        }
         $this->load->library('email', $config);
         $this->email->from(get_settings('sender'), get_settings('store_name'));
         $this->email->to($send_to);

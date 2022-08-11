@@ -282,6 +282,139 @@ if (!function_exists('get_payment_status')) {
             return 'Menunggu Pembayaran';
     }
 }
+if (!function_exists('get_persen')) {
+    function get_persen($data1, $data2)
+    {
+        $newdata1 = $data1 * 100;
+        $newdata2 = $data2 * 100;
+        $persen = 0;
+        if ($newdata2 > $newdata1) {
+            $persen = ceil((($newdata2 - $newdata1) / $newdata1) * 100);
+        } else {
+            $persen = ceil((($newdata2 - $newdata1) / $newdata2) * 100);
+        }
+        return $persen;
+    }
+}
+if (!function_exists('get_income')) {
+    function get_income($data1, $data2)
+    {
+        $newdata1 = $data1;
+        $newdata2 = $data2;
+        $persen = 0;
+        if ($newdata2 > $newdata1) {
+            $persen = (($newdata2 - $newdata1) / $newdata1) * 100;
+        } else {
+            $persen = (($newdata2 - $newdata1) / $newdata2) * 100;
+        }
+        return number_format($persen, 1);
+    }
+}
+
+if (!function_exists('get_income_perday')) {
+    function get_income_perday($data = array())
+    {
+        $newdata1 = $data[0]->total_payment;
+        $newdata2 = $data[1]->total_payment;
+        if (isset($data[0]->status)) {
+            if ($data[0]->status == '1hari') {
+                $newdata2 = $data[0]->total_payment;
+                $newdata1 = $data[1]->total_payment;
+            }
+        }
+
+        if ($newdata1 == 0 && $newdata2 == 0 || $newdata1 == $newdata2) {
+            return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
+            <span class="text-nowrap">Pendapatan Sama</span>
+            <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
+          </p>';
+        }
+        $persen = 0;
+        if ($newdata2 > $newdata1) {
+            $persen = $newdata2 - $newdata1;
+            return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
+            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i></span>
+            <span class="text-nowrap">Pendapatan Menaik Rp.' . format_rupiah($persen) . '</span>
+            <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
+          </p>';
+        } else if ($newdata2 < $newdata1) {
+            $persen = $newdata1 - $newdata2;
+            return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
+            <span class="text-danger mr-2"><i class="fa fa-arrow-down"></i></span>
+            <span class="text-nowrap">Pendapatan Menurun Rp.' . format_rupiah($persen) . '</span>
+            <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
+          </p>';
+        }
+    }
+}
+
+if (!function_exists('get_order_perday')) {
+    function get_order_perday($data = array())
+    {
+        $newdata1 = $data[0]->total_order;
+        $newdata2 = $data[1]->total_order;
+        if (isset($data[0]->status)) {
+            if ($data[0]->status == '1hari') {
+                $newdata2 = $data[0]->total_order;
+                $newdata1 = $data[1]->total_order;
+            }
+        }
+
+        if ($newdata1 == 0 && $newdata2 == 0 || $newdata1 == $newdata2) {
+            return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
+            <span class="text-nowrap">Orderan Sama</span>
+            <br>
+            <span class="text-nowrap">Dengan Hari Sebelumnya</span>
+          </p>';
+        }
+        $persen = 0;
+        if ($newdata2 > $newdata1) {
+            $persen = $newdata2 - $newdata1;
+            return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
+            <span class="text-success mr-2"><i class="fa fa-arrow-up"></i></span>
+            <span class="text-nowrap">Orderan Meningkat Sebanyak' . $persen . '</span>
+            <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
+          </p>';
+        } else if ($newdata2 < $newdata1) {
+            $persen = $newdata1 - $newdata2;
+            return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
+            <span class="text-danger mr-2"><i class="fa fa-arrow-down"></i></span>
+            <span class="text-nowrap">Orderan Menurun Sebanyak' . $persen . '</span>
+            <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
+          </p>';
+        }
+    }
+}
+if (!function_exists('get_income_perday_total')) {
+    function get_income_perday_total($data = array())
+    {
+        $newdata1 = $data[0]->total_payment;
+        $newdata2 = $data[1]->total_payment;
+        if (isset($data[0]->status)) {
+            if ($data[0]->status == '1hari') {
+                $newdata2 = $data[0]->total_payment;
+                $newdata1 = $data[1]->total_payment;
+            }
+        }
+        return $newdata2;
+    }
+}
+if (!function_exists('get_order_perday_total')) {
+    function get_order_perday_total($data = array())
+    {
+        $newdata1 = $data[0]->total_order;
+        $newdata2 = $data[1]->total_order;
+        if (isset($data[0]->status)) {
+            if ($data[0]->status == '1hari') {
+                $newdata2 = $data[0]->total_order;
+                $newdata1 = $data[1]->total_order;
+            }
+        }
+        return $newdata2;
+    }
+}
+
+
 if (!function_exists('get_notif_status')) {
     function get_notif_status($status)
     {

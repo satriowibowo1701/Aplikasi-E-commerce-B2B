@@ -15,7 +15,13 @@ class Payment_model extends CI_Model
 
     public function sum_success_payment()
     {
-        return $this->db->select('SUM(total_price) as total_payment')->where('order_status', 4)->or_where('order_status', 3)->get('orders')->row()->total_payment;
+
+        return $this->db->select('SUM(total_price) as total_payment , DAY(order_date) day')
+            ->where(array('order_status' => 4))
+            ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)', "", false)
+            ->or_where('payment_method', 2)->where(array('order_status' => 3))
+            ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)', "", false)
+            ->get('orders')->result();
     }
 
     public function payment_overview()
