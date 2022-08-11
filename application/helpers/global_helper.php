@@ -326,7 +326,7 @@ if (!function_exists('get_income_perday')) {
         if ($newdata1 == 0 && $newdata2 == 0 || $newdata1 == $newdata2) {
             return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
             <span class="text-nowrap">Pendapatan Sama</span>
-            <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
+            <span class="text-nowrap">Dengan Hari Sebelumnya</span>
           </p>';
         }
         $persen = 0;

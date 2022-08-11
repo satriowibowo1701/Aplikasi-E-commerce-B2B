@@ -71,9 +71,7 @@
                                     <th class="border-0 text-center">Nomer Orderan</th>
                                     <th class="border-0 text-center">Tanggal Orderan</th>
                                     <th class="border-0 text-center">Jumlah Orderan</th>
-                                    <th class="border-0 text-center">Total Orderan</th>
-
-
+                                    <th class="border-0 text-center">Total Transaksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -239,10 +237,11 @@
 
                             <tfoot>
                                 <tr class="bg-dark text-white">
-                                    <th style="text-align:center">Jumlah</th>
+                                    <th style="text-align:center" colspan="4" >Total</th>
                                     <th style="text-align:center"> Total</th>
                                     <th style="text-align:center"> Total</th>
                                 </tr>
+                                
                             </tfoot>
 
                         </table>

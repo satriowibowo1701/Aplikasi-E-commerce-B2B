@@ -123,9 +123,10 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 ?>
                   <i class="fa fa-arrow-up text-success"></i>
                   <span class="font-weight-bold" style="color:white;"><?= $status_order ?>% Meningkat</span> Pada Bulan <?= get_month($status_overviews[0]->month) ?>
-                <?php } else { ?>
+                <?php } else if ($status_order < 0) { ?>
                   <i class="fa fa-arrow-down text-danger"></i>
                   <span class="font-weight-bold" style="color:white;"><?= $status_order ?>% Menurun</span> Pada Bulan <?= get_month($status_overviews[0]->month) ?>
+                <?php } else if (!isset($status_order)){ ?>                 
                 <?php } ?>
               </p>
             </div>
@@ -152,7 +153,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 ?>
                   <i class="fa fa-arrow-up text-success"></i>
                   <span class="font-weight-bold" style="color:black;"><?= $status_income ?>% Meningkat</span> Pada Bulan <?= get_month($status_income_overviews[0]->month) ?>
-                <?php } else { ?>
+                <?php } else if ($status_income < 0){ ?>
                   <i class="fa fa-arrow-down text-danger"></i>
                   <span class="font-weight-bold" style="color:black"><?= $status_income ?>% Menurun</span> Pada Bulan <?= get_month($status_income_overviews[0]->month) ?>
                 <?php } ?>

@@ -170,6 +170,24 @@ class Order_model extends CI_Model
         return $overview->result();
     }
 
+    public function data_order_by_tanggal(){
+
+        $start = date('y-m-d');
+        $end = date('y-m-d');
+        
+        $data = $this->db->query("
+            SELECT o.order_number As ordernum, cu.name As pelanggan,o.order_date As tanggal,o.total_items AS totalitem,o.total_price As totalharga
+            FROM orders o
+            JOIN customers cu
+                ON cu.user_id = o.user_id
+            WHERE o.order_date BETWEEN '$start' AND '$end'
+            ORDER BY o.order_date DESC
+        ");
+        return $data->result();
+
+
+    }
+
     public function income_overview()
     {
         $data = $this->db->query("

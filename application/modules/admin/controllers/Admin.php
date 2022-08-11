@@ -85,9 +85,12 @@ class Admin extends CI_Controller
         }
 
 
-
-        $overview['status_order'] = get_persen($overview['status_overviews'][1]->sale, $overview['status_overviews'][0]->sale);
-        $overview['status_income'] = get_income($overview['status_income_overviews'][1]->income, $overview['status_income_overviews'][0]->income);
+        if($overview['status_overviews'] != NULL){
+            $overview['status_order'] = get_persen($overview['status_overviews'][1]->sale, $overview['status_overviews'][0]->sale);
+        }
+        if($overview['status_income_overviews'] != NULL){
+            $overview['status_income'] = get_income($overview['status_income_overviews'][1]->income, $overview['status_income_overviews'][0]->income);
+        }
 
         $this->load->view('header', $params);
         $this->load->view('overview', $overview);
@@ -100,6 +103,9 @@ class Admin extends CI_Controller
     }
     public function tables()
     {
+        $data = $this->order->data_order_by_tanggal();
+        var_dump($data);
+        die;
         $params['title'] = 'Admin ' . get_store_name();
         $params['total_notif'] = $this->payment->countnotif();
         $params['notif'] = $this->payment->notifikasi();
