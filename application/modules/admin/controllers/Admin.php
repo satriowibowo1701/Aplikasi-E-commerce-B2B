@@ -26,7 +26,15 @@ class Admin extends CI_Controller
         $overview['total_products'] = $this->product->count_all_products();
         $overview['total_customers'] = $this->customer->count_all_customers();
         $overview['total_order'] = $this->order->count_all_orders();
-
+        $overview['barang_laku'] = $this->order->barang_laku();
+        $warna = ['red', 'yellow', 'green', 'blue', 'purple', 'orange', 'brown', 'pink', 'black', 'grey', 'white'];
+        $newwarna = [];
+        $id = 0;
+        foreach ($overview['barang_laku'] as $key) {
+            array_push($newwarna, $warna[$id]);
+            $id++;
+        }
+        $overview['warna'] = $newwarna;
         $overview['total_income'] = $this->payment->sum_success_payment();
 
         if ($overview['total_order'] == null) {
@@ -57,12 +65,6 @@ class Admin extends CI_Controller
                 }
             }
         }
-
-
-
-
-
-
         $overview['products'] = $this->product->latest();
         $overview['categories'] = $this->product->latest_categories();
         $overview['payments'] = $this->payment->payment_overview();
@@ -85,10 +87,10 @@ class Admin extends CI_Controller
         }
 
 
-        if($overview['status_overviews'] != NULL){
+        if ($overview['status_overviews'] != NULL) {
             $overview['status_order'] = get_persen($overview['status_overviews'][1]->sale, $overview['status_overviews'][0]->sale);
         }
-        if($overview['status_income_overviews'] != NULL){
+        if ($overview['status_income_overviews'] != NULL) {
             $overview['status_income'] = get_income($overview['status_income_overviews'][1]->income, $overview['status_income_overviews'][0]->income);
         }
 
@@ -97,21 +99,95 @@ class Admin extends CI_Controller
         $this->load->view('footer');
     }
 
-    public function tulis()
+    public function change_bulan()
     {
-        echo "oke";
+        $bulan = $this->input->post('bulan');
+        $data = $this->order->barang_laku($bulan);
+        $warna = ['red', 'yellow', 'green', 'blue', 'purple', 'orange', 'brown', 'pink', 'black', 'grey', 'white'];
+        $newwarna = [];
+        $id = 0;
+        $namabrg = [];
+        $total = [];
+
+        foreach ($data as $key) {
+            array_push($namabrg, $key->nama_brg);
+            array_push($total, $key->jumlah);
+            array_push($newwarna, $warna[$id]);
+            $id++;
+        }
+
+
+        $respons = array(
+            'namabrg' => $namabrg,
+            'total' => $total,
+            'warna' => $newwarna
+        );
+        echo json_encode($respons);
+    }
+
+    public function change_kategori()
+    {
+        $bulan = $this->input->post('bulan');
+        $data = $this->order->kategori_laku($bulan);
+        $warna = ['red', 'yellow', 'green', 'blue', 'purple', 'orange', 'brown', 'pink', 'black', 'grey', 'white'];
+        $newwarna = [];
+        $id = 0;
+        $namabrg = [];
+        $total = [];
+
+        foreach ($data as $key) {
+            array_push($namabrg, $key->nama_ktgr);
+            array_push($total, $key->jumlah);
+            array_push($newwarna, $warna[$id]);
+            $id++;
+        }
+
+
+        $respons = array(
+            'namaktgr' => $namabrg,
+            'total' => $total,
+            'warna' => $newwarna
+        );
+        echo json_encode($respons);
     }
     public function tables()
     {
-        $data = $this->order->data_order_by_tanggal();
-        var_dump($data);
-        die;
+        $data['datatable'] = $this->order->startdate();
         $params['title'] = 'Admin ' . get_store_name();
         $params['total_notif'] = $this->payment->countnotif();
         $params['notif'] = $this->payment->notifikasi();
         $params['linkdata'] = $this->payment->linknotif();
         $this->load->view('header', $params);
-        $this->load->view('tables');
+        $this->load->view('tables', $data);
         $this->load->view('footer');
+    }
+
+    public function change_table()
+    {
+        $list = $this->order->get_datatables();
+        $data = array();
+        $no = $_POST['start'];
+        $id = 1;
+        foreach ($list as $dataorder) {
+            $no++;
+            $row = array();
+            $row[] = $id++;
+            $row[] = $dataorder->ordernum;
+            $row[] = $dataorder->pelanggan;
+            $row[] = $dataorder->tanggal;
+            $row[] = $dataorder->totalitem;
+            $row[] = $dataorder->totalharga;
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->order->count_all(),
+            "recordsFiltered" => $this->order->count_filtered(),
+            "data" => $data,
+        );
+
+        //output to json format
+        echo json_encode($output);
     }
 }

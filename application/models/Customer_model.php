@@ -115,4 +115,28 @@ class Customer_model extends CI_Model
     {
         return $this->db->where('id', $userid)->get('users')->row()->email;
     }
+
+    public function reset_insert($data)
+    {
+        $this->db->insert('reset_password', $data);
+    }
+    public function checkuser($email)
+    {
+        return $this->db->where('email', $email)->get('users')->num_rows();
+    }
+
+    public function checktoken($token)
+    {
+        return $this->db->where(array('token' => $token, 'is_active' => 0))->get('reset_password')->num_rows();
+    }
+
+    public function update_reset($email, $password, $token)
+    {
+        $this->db->where('token', $token)->update('reset_password', array('is_active' => 1));
+        return $this->db->where('email', $email)->update('users', array('password' => $password));
+    }
+    public function take_email($token)
+    {
+        return $this->db->where('token', $token)->get('reset_password')->row()->email;
+    }
 }

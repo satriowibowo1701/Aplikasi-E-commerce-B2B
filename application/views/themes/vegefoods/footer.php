@@ -131,7 +131,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
   $('.add-cart').click(function(e) {
     e.preventDefault();
-
     var id = $(this).data('id');
     var sku = $(this).data('sku');
     var qty = $(this).data('qty');
@@ -248,7 +247,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
           },
           onPending: function(result) {
             changeResult('pending', result);
-            console.log(result.status_message);
             $("#payment-form").submit();
           },
           onError: function(result) {

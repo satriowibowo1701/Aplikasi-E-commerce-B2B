@@ -30,9 +30,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <th scope="col">Tanggal</th>
                                 <th scope="col">Review</th>
                             </tr>
-                            <?php foreach ($reviews as $review) : ?>
+                            <?php
+                            $no = 1;
+                            foreach ($reviews as $review) : ?>
                                 <tr>
-                                    <td><?php echo $review->id; ?></td>
+                                    <td><?php echo $no++; ?></td>
                                     <td><?php echo anchor('customer/reviews/view/' . $review->id, '#' . $review->order_number); ?></td>
                                     <td><?php echo get_formatted_date($review->review_date); ?></td>
                                     <td><?php echo $review->review_text; ?></td>
@@ -40,26 +42,31 @@ defined('BASEPATH') or exit('No direct script access allowed');
                             <?php endforeach; ?>
                         </table>
                     </div>
-                <?php else : ?>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="alert alert-info">
-                                Belum ada review yang ditulis. Silahkan tulis baru.
-                            </div>
-
-                            <?php echo anchor('customer/reviews/write', 'Tulisan review baru'); ?>
-                        </div>
-                    </div>
-                <?php endif; ?>
             </div>
-
-            <?php if ($pagination) : ?>
-                <div class="card-footer">
-                    <?php echo $pagination; ?>
+            <?php if (count($reviews) > 0) { ?>
+                <div class="row mt-2">
+                    <?php echo anchor('customer/reviews/write', 'Tambah review baru'); ?>
                 </div>
-            <?php endif; ?>
-
+            <?php } ?>
+        <?php else : ?>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="alert alert-info">
+                        Belum ada review yang ditulis. Silahkan tulis baru.
+                    </div>
+                    <?php echo anchor('customer/reviews/write', 'Tulisan review baru'); ?>
+                </div>
+            </div>
+        <?php endif; ?>
         </div>
-    </section>
+
+        <?php if ($pagination) : ?>
+            <div class="card-footer">
+                <?php echo $pagination; ?>
+            </div>
+        <?php endif; ?>
+
+</div>
+</section>
 
 </div>

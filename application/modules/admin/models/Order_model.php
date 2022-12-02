@@ -6,6 +6,7 @@ class Order_model extends CI_Model
     public function __construct()
     {
         parent::__construct();
+        date_default_timezone_set('Asia/Jakarta');
     }
 
     public function count_all_orderss($status, $statpay)
@@ -23,6 +24,7 @@ class Order_model extends CI_Model
         return $this->db->select('count(order_number) total_order, DAY(order_date) day')
             ->where(array('order_status' => 4))
             ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)', "", false)
+            ->where('(payment_method=1 OR payment_method=3)', "", false)
             ->or_where('payment_method', 2)
             ->where('order_status', 3)
             ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)  GROUP BY DAY(order_date)', "", false)
@@ -154,7 +156,7 @@ class Order_model extends CI_Model
         $overview = $this->db->query("
             SELECT MONTH(order_date) month, COUNT(order_date) sale 
             FROM orders
-            WHERE  order_date >= NOW() - INTERVAL 1 YEAR  AND order_status = 4 OR  order_status = 3 AND payment_method = '2'
+            WHERE  order_date >= NOW() - INTERVAL 1 YEAR  AND order_status = 4 AND (payment_method=1 OR payment_method=3) OR  order_status = 3 AND payment_method = '2'
             GROUP BY MONTH(order_date)");
 
         return $overview->result();
@@ -164,36 +166,74 @@ class Order_model extends CI_Model
         $overview = $this->db->query("
             SELECT MONTH(order_date) month, COUNT(order_date) sale 
             FROM orders
-            WHERE  MONTH(order_date) <= MONTH(NOW() -INTERVAL $interval  MONTH) AND order_status = 4 OR  order_status = 3 AND payment_method = '2' AND MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH)
+            WHERE  MONTH(order_date) <= MONTH(NOW() -INTERVAL $interval  MONTH) AND order_status = 4 AND (payment_method=1 OR payment_method=3) OR  order_status = 3 AND payment_method = '2' AND MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH)
             GROUP BY MONTH(order_date) ORDER BY MONTH(order_date) DESC  LIMIT 2 ");
 
         return $overview->result();
     }
 
-    public function data_order_by_tanggal(){
+    public function startdate()
+    {
 
-        $start = date('y-m-d');
-        $end = date('y-m-d');
-        
         $data = $this->db->query("
-            SELECT o.order_number As ordernum, cu.name As pelanggan,o.order_date As tanggal,o.total_items AS totalitem,o.total_price As totalharga
+            SELECT CAST(o.order_date as Date ) startdate
             FROM orders o
             JOIN customers cu
-                ON cu.user_id = o.user_id
-            WHERE o.order_date BETWEEN '$start' AND '$end'
-            ORDER BY o.order_date DESC
-        ");
+            ON cu.user_id = o.user_id
+            WHERE o.order_status = 4 AND (o.payment_method=1 OR o.payment_method=3) OR o.payment_method = 2 AND o.order_status = 3 ORDER BY o.order_date ASC LIMIT 1");
+
         return $data->result();
-
-
     }
 
     public function income_overview()
     {
         $data = $this->db->query("
             SELECT  MONTH(order_date) AS month, SUM(total_price) AS income
-            FROM orders WHERE order_status = 4  OR order_status = 3 AND payment_method = 2
+            FROM orders WHERE order_status = 4 AND (payment_method=1 OR payment_method=3)  OR order_status = 3 AND payment_method = 2
             GROUP BY MONTH(order_date)");
+
+        return $data->result();
+    }
+    public function barang_laku($interval = 1)
+    {
+        if ($interval > 1) {
+            $res = $interval - 1;
+        }
+
+        $bulan = ($interval == 1) ? 'MONTH(NOW())' : 'MONTH(NOW() - INTERVAL ' . $res . ' MONTH)';
+        $data = $this->db->query("
+            SELECT  p.name as nama_brg, sum(oi.order_qty) as jumlah 
+            FROM orders o
+            JOIN  order_items oi
+            ON oi.order_id = o.id
+            JOIN products p
+            ON p.id = oi.product_id
+            WHERE o.order_status = 4 AND (o.payment_method=1 OR o.payment_method=3) AND MONTH(o.order_date) >= MONTH(NOW() -INTERVAL $interval MONTH) AND  MONTH(o.order_date) < $bulan OR o.order_status = 3 AND o.payment_method = 2 AND MONTH(o.order_date) >= MONTH(NOW() -INTERVAL $interval MONTH) AND  MONTH(o.order_date) < $bulan
+            GROUP BY p.name ORDER BY jumlah DESC LIMIT 5
+            ");
+
+        return $data->result();
+    }
+
+    public function kategori_laku($interval = 1)
+    {
+        if ($interval > 1) {
+            $res = $interval - 1;
+        }
+
+        $bulan = ($interval == 1) ? 'MONTH(NOW())' : 'MONTH(NOW() - INTERVAL ' . $res . ' MONTH)';
+        $data = $this->db->query("
+            SELECT pc.name as nama_ktgr,count(DISTINCT o.order_number) as jumlah 
+            FROM orders o
+            JOIN  order_items oi
+            ON oi.order_id = o.id
+            JOIN products p
+            ON p.id = oi.product_id
+            JOIN product_category pc
+            ON pc.id = p.category_id
+            WHERE o.order_status = 4 AND (o.payment_method=1 OR o.payment_method=3) AND MONTH(o.order_date) >= MONTH(NOW() -INTERVAL $interval MONTH) AND  MONTH(o.order_date) < $bulan OR o.order_status = 3 AND o.payment_method = 2 AND MONTH(o.order_date) >= MONTH(NOW() -INTERVAL $interval MONTH) AND  MONTH(o.order_date) < $bulan
+            GROUP BY pc.name ORDER BY jumlah DESC LIMIT 5
+            ");
 
         return $data->result();
     }
@@ -201,9 +241,144 @@ class Order_model extends CI_Model
     {
         $data = $this->db->query("
             SELECT  MONTH(order_date) AS month, SUM(total_price) AS income
-            FROM orders WHERE  MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH) AND order_status = 4  OR order_status = 3 AND payment_method = 2 AND MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH)
+            FROM orders WHERE  MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH) AND order_status = 4 AND (payment_method=1 OR payment_method=3) OR order_status = 3 AND payment_method = 2 AND MONTH(order_date) <= MONTH(NOW() - INTERVAL $interval  MONTH)
             GROUP BY MONTH(order_date) ORDER BY MONTH(order_date) DESC  LIMIT 2");
 
         return $data->result();
+    }
+
+    private function _get_datatables_query()
+    {
+        $column_order = array('o.order_number', 'c.name', 'o.order_date', 'o.total_items', 'o.total_price'); //set column field database for datatable orderable
+        $column_search = array('o.order_number', 'c.name', 'o.order_date', 'o.total_items', 'o.total_price'); //set column field database for datatable searchable just firstname , lastname , address are searchable
+        $order = array('order_date' => 'asc'); // default order 
+
+        //add custom filter here
+        if ($this->input->post('tgl_awal')) {
+            $tgl_awal = $this->input->post('tgl_awal');
+            $tgl_akhir = $this->input->post('tgl_akhir');
+            $tgl_a = substr($tgl_awal, 0, 10);
+            $tgl_b = substr($tgl_akhir, 14, 11);
+            $this->db->where("CAST(o.order_date as Date) Between '$tgl_a' AND '$tgl_b'");
+            $this->db->where('o.order_status', 4);
+            $this->db->where('(o.payment_method=1 OR o.payment_method=3)', "", false);
+            $i = 0;
+
+            foreach ($column_search as $item) // loop column 
+            {
+                if ($_POST['search']['value']) // if datatable send POST for search
+                {
+
+                    if ($i === 0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like($item, $_POST['search']['value']);
+                    } else {
+                        $this->db->or_like($item, $_POST['search']['value']);
+                    }
+
+                    if (count($column_search) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
+            $this->db->or_where('o.payment_method', 2);
+            $this->db->where('o.order_status', 3);
+            $this->db->where("CAST(o.order_date as Date) Between '$tgl_a' AND '$tgl_b'");
+        } else {
+            $this->db->where('o.order_status', 4);
+            $this->db->where('(o.payment_method=1 OR o.payment_method=3)', "", false);
+
+            $i = 0;
+
+            foreach ($column_search as $item) // loop column 
+            {
+                if ($_POST['search']['value']) // if datatable send POST for search
+                {
+
+                    if ($i === 0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like($item, $_POST['search']['value']);
+                    } else {
+                        $this->db->or_like($item, $_POST['search']['value']);
+                    }
+
+                    if (count($column_search) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
+            $this->db->or_where('o.payment_method', 2);
+            $this->db->where('o.order_status', 3);
+        }
+
+
+
+        $this->db->select('o.order_number AS ordernum');
+        $this->db->select('c.name AS pelanggan');
+        $this->db->select('o.order_date AS tanggal');
+        $this->db->select('o.total_items AS totalitem');
+        $this->db->select('o.total_price As totalharga');
+
+        $this->db->from('orders o');
+        $this->db->join('customers c', 'c.user_id = o.user_id');
+
+
+
+        $i = 0;
+
+        foreach ($column_search as $item) // loop column 
+        {
+            if ($_POST['search']['value']) // if datatable send POST for search
+            {
+
+                if ($i === 0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                } else {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+
+                if (count($column_search) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+
+        if (isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($column_order[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        } else if (isset($order)) {
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+    function get_datatables()
+    {
+        $this->_get_datatables_query();
+        if ($_POST['length'] != -1)
+            $this->db->limit($_POST['length'], $_POST['start']);
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    function count_filtered()
+    {
+        $this->_get_datatables_query();
+
+        $query = $this->db->get();
+
+        return $query->num_rows();
+    }
+
+
+
+    public function count_all()
+    {
+        $this->_get_datatables_query();
+
+        $this->db->get();
+        return $this->db->count_all_results();
     }
 }

@@ -9,7 +9,7 @@ class Email1 extends CI_Controller
             'customer_model' => 'customer'
         ));
     }
-    public function sendmail($subject, $ordern, $name)
+    public function sendmail($subject, $ordern, $name, $id)
     {
         $message = '<!DOCTYPE html>
         <html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="en">
@@ -399,7 +399,7 @@ class Email1 extends CI_Controller
             'crlf'    => "\r\n",
             'newline' => "\r\n"
         ];
-        $send_to = $this->customer->cus();
+        $send_to = $this->customer->cus($id);
         $this->load->library('email', $config);
         $this->email->from(get_settings('sender'), get_settings('store_name'));
         $this->email->to($send_to->email);

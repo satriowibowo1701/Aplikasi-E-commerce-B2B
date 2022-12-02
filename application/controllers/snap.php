@@ -25,7 +25,7 @@ class Snap extends Email1
 	public function __construct()
 	{
 		parent::__construct();
-		$params = array('server_key' => 'SB-Mid-server-SncqFmlAhQF1Or6Wd8rsoLuw', 'production' => false);
+		$params = array('server_key' => get_settings('server_key'), 'production' => false);
 		$this->load->library('midtrans');
 
 		$this->midtrans->config($params);
@@ -169,7 +169,6 @@ class Snap extends Email1
 		$resurl = $this->input->post('url1');
 
 
-
 		if ($result['status_code'] == 504) {
 			redirect(site_url('shop/checkout'));
 			die;
@@ -177,9 +176,9 @@ class Snap extends Email1
 
 		$bank = 'gopay';
 		$va = 'qris Code';
-		if ($result['payment_type'] != 'gopay') {
-			$bank = (($result['va_numbers'][0]['bank']) ? strtoupper($result['va_numbers'][0]['bank']) : (($result['payment_type'] == 'echannel' && $result['biller_code']) ? 'MANDIRI' : ((($result['payment_type'] == 'cstore' && $result['payment_code']) && (!$result['fraud_status'])) ? 'INDOMARET' : ((($result['payment_type'] == 'cstore' && $result['payment_code']) && $result['fraud_status']) ? 'ALFAMART' : 'PERMATA BANK'))));
-			$va = ($result['bill_key'] or $result['permata_va_number']) ? ($result['bill_key'] ? $result['bill_key'] : $result['permata_va_number']) : ((($result['payment_code'] && $result['payment_type'] == 'cstore') && (!$result['fraud_status'])) ? $result['payment_code'] : ((($result['payment_type'] == 'cstore' && $result['payment_code']) && $result['fraud_status']) ? $result['payment_code'] : $result['va_numbers'][0]['va_number']));
+		if ($result['payment_type'] != 'qris') {
+			$bank = ((isset($result['va_numbers'][0]['bank'])) ? strtoupper($result['va_numbers'][0]['bank']) : (($result['payment_type'] == 'echannel' && isset($result['biller_code'])) ? 'MANDIRI' : ((($result['payment_type'] == 'cstore' && isset($result['payment_code'])) && (!isset($result['fraud_status']))) ? 'INDOMARET' : ((($result['payment_type'] == 'cstore' && isset($result['payment_code'])) && isset($result['fraud_status'])) ? 'ALFAMART' : 'PERMATA BANK'))));
+			$va = (isset($result['bill_key']) or isset($result['permata_va_number'])) ? (isset($result['bill_key']) ? $result['bill_key'] : $result['permata_va_number']) : (((isset($result['payment_code']) && $result['payment_type'] == 'cstore') && (!isset($result['fraud_status']))) ? $result['payment_code'] : ((($result['payment_type'] == 'cstore' && isset($result['payment_code'])) && isset($result['fraud_status'])) ? $result['payment_code'] : $result['va_numbers'][0]['va_number']));
 		}
 		if ($this->session->userdata('_temp_quantity') || $this->session->userdata('_temp_coupon')) {
 			$this->session->unset_userdata('_temp_coupon');
@@ -220,7 +219,7 @@ class Snap extends Email1
 			'waktu_transaksi' => $result['transaction_time'],
 			'bank' => $bank,
 			'va_number' => $va,
-			'pdf_url' => ($result['payment_type'] == 'gopay') ? $resurl : $result['pdf_url'],
+			'pdf_url' => ($result['payment_type'] == 'qris') ? $resurl : $result['pdf_url'],
 			'status_code' => $result['status_code'],
 			'note' => $note,
 		);

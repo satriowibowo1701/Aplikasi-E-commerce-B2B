@@ -24,7 +24,8 @@ class Settings extends CI_Controller
         $params['linkdata'] = $this->payment->linknotif();
         $settings['flash'] = $this->session->flashdata('settings_flash');
         $settings['banks'] = (array) json_decode(get_settings('payment_banks'));
-
+        $settings['ongkir'] = $this->setting->get_ongkir();
+        $settings['slider'] = $this->setting->get_data_slider();
         $this->load->view('header', $params);
         $this->load->view('settings/settings', $settings);
         $this->load->view('footer');
@@ -32,9 +33,60 @@ class Settings extends CI_Controller
 
     public function update()
     {
+        $oldlogo = $this->setting->get_settings_slide();
+        $newdat = json_decode($oldlogo, TRUE);
+
+        $slider = [];
+        if (isset($_FILES['picture1']) && @$_FILES['picture1']['error'] == '0' or isset($_FILES['picture2']) && @$_FILES['picture2']['error'] == '0' or isset($_FILES['picture3']) && @$_FILES['picture3']['error'] == '0') {
+            $config['upload_path'] = './assets/themes/vegefoods/images';
+            $config['allowed_types'] = 'jpg|png|jpeg';
+            $config['max_size'] = 2048;
+            $this->load->library('upload', $config);
+            $id = 1;
+            foreach ($newdat as $data) {
+                ///gambar
+                if ($this->upload->do_upload('picture' . $id) && $_FILES['picture' . $id]['name'] != "") {
+                    $upload_data = $this->upload->data();
+                    $new_file_name = $upload_data['file_name'];
+                    $profile_picture = $new_file_name;
+                    if (file_exists('assets/themes/vegefoods/images/' . $data['gambar']))
+                        unlink('./assets/themes/vegefoods/images/' . $data['gambar']);
+                } else {
+                    $profile_picture = $data['gambar'];
+                }
+
+                //konten
+                ////
+                array_push($slider, array("gambar" => $profile_picture, "konten" => $this->input->post('konten' . $id)));
+                $id++;
+            }
+            $jsonslider = json_encode($slider);
+        } else {
+            $jsonslider = $oldlogo;
+        }
+        update_settings('slider', $jsonslider);
+
+        $oldlogoo = $this->setting->get_settings_logo();
+        if (isset($_FILES['picture']) && @$_FILES['picture']['error'] == '0') {
+            $config['upload_path'] = './assets/uploads/sites/';
+            $config['allowed_types'] = 'jpg|png|jpeg';
+            $config['max_size'] = 2048;
+            $this->load->library('upload', $config);
+            if ($this->upload->do_upload('picture')) {
+                $upload_data = $this->upload->data();
+                $new_file_name = $upload_data['file_name'];
+                $profile_picture = $new_file_name;
+                if (file_exists('assets/uploads/sites/' . $oldlogoo))
+                    unlink('./assets/uploads/sites/' . $oldlogoo);
+            }
+        } else {
+            $profile_picture = $oldlogoo;
+        }
+        update_settings('store_logo', $profile_picture);
+
         $fields = array(
             'store_name', 'store_phone_number', 'store_email', 'store_tagline', 'store_description',
-            'store_address', 'min_shop_to_free_shipping_cost', 'shipping_cost'
+            'store_address', 'min_shop_to_free_shipping_cost', 'shipping_cost', 'server_key', 'client_key', 'pass_mail'
         );
 
         foreach ($fields as $field) {
@@ -86,6 +138,21 @@ class Settings extends CI_Controller
         redirect('admin/settings');
     }
 
+    public function add_ongkir()
+    {
+        $wilayah = $this->input->post('wilayah');
+        $tarif = $this->input->post('tarif');
+        $data = [
+            'wilayah' => $wilayah,
+            'tarif' => $tarif
+        ];
+        $sukses = $this->setting->add_ongkir($data);
+        if ($sukses) {
+            $this->session->set_flashdata('settings_flash', 'Berhasil menambah data ongkir');
+            redirect('admin/settings');
+        }
+    }
+
     public function profile()
     {
         $params['title'] = 'Profil Saya';
@@ -98,6 +165,12 @@ class Settings extends CI_Controller
         $this->load->view('header', $params);
         $this->load->view('settings/profile', $profile);
         $this->load->view('footer');
+    }
+    public function flatongkir()
+    {
+        $data = $this->input->post('flat');
+        $res = $this->setting->update_ongkir($data);
+        echo $res;
     }
 
     public function profile_update()

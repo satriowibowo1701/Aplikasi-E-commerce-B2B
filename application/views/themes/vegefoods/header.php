@@ -13,7 +13,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 	<link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i&display=swap" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700&display=swap" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	<link rel="icon" href="<?php echo base_url('assets/uploads/sites/Logo.png'); ?>">
+	<link rel="icon" href="<?php echo get_store_logo(); ?>">
 
 	<link rel="stylesheet" href="<?php echo get_theme_uri('css/open-iconic-bootstrap.min.css'); ?>">
 	<link rel="stylesheet" href="<?php echo get_theme_uri('css/animate.css'); ?>">
@@ -82,6 +82,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 							<a class="dropdown-item" href="<?php echo site_url('customer/payments/confirm'); ?>">Konfirmasi Pembayaran</a>
 						</div>
 					</li>
+					<li class="nav-item"><a href="<?php echo base_url('product'); ?>" class="nav-link">Produk</a></li>
 					<li class="nav-item"><a href="<?php echo site_url('pages/about'); ?>" class="nav-link">Tentang Kami</a></li>
 					<li class="nav-item"><a href="<?php echo site_url('pages/contact'); ?>" class="nav-link">Kontak</a></li>
 					<li class="nav-item dropdown">

@@ -19,6 +19,7 @@ class Home extends CI_Controller
         $products['products'] = $this->product->get_all_products();
         $products['best_deal'] = $this->product->best_deal_product();
         $products['reviews'] = $this->review->get_all_reviews();
+        $products['slider'] = $this->product->get_data_slider();
 
 
         get_header($params);

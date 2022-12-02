@@ -77,7 +77,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
                       <?php echo $transfer_from->bank; ?> a.n <?php echo $transfer_from->name; ?> (<?php echo $transfer_from->number; ?>)
                     <?php } else {
                       $transfer_to = $bank_data['transfer_to'];
-                      $transfer_to = $banks[$transfer_to]; ?>
+                      $transfer_to = $banks[$transfer_to];
+                    ?>
                       <?php echo $transfer_to->bank; ?> a.n <?php echo $transfer_to->name; ?> (<?php echo $transfer_to->number; ?>)
                     <?php } ?>
                   </b></div>

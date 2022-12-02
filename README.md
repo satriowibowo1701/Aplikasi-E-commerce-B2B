@@ -1,6 +1,6 @@
-# Toko Sayur 22
+# Rumah Makan Bu Inem
 
-Toko sayur 22 merupakan aplikasi web toko online sederhana dengan demo produk penjualan sayur. Produk dan kategori dapat diubah dengan bebas (tidak hanya sayur), pengaturan (nama situs, rekening) dan sebagainya bisa diubah dengan bebas melalui dasbor.
+Rumah Makan Bu Inem merupakan aplikasi web toko online sederhana dengan demo produk penjualan makanan. Produk dan kategori dapat diubah dengan bebas (tidak hanya makanan), pengaturan (nama situs, rekening , slide,ongkir,dll) dan sebagainya bisa diubah dengan bebas melalui dasbor.
 
 ##Fitur
 
@@ -9,10 +9,16 @@ Toko sayur 22 merupakan aplikasi web toko online sederhana dengan demo produk pe
 - Keranjang belanja
 - Checkout
 - Sistem kupon Belanja
-- Pembayaran melalui transfer bank
-- Konfirmasi pembayaran
+- Pembayaran melalui transfer bank (manual)
+- Pembayaran melalui payment gateway (otomtatis)
+- Konfirmasi pembayaran (Manual : wajib konfirmasi, Otomatis: akan terkonfirmasi secara otomatis)
 - Formulir kontak
+- Pengaturan ongkos kirim (bisa mengaktifkan flat ongkir dan menyesuaikan tarif ongkir  perdaerah)
+- Laporan Hasil penjualan (Bisa Di cetak/download)
+- Laporan Produk/kategori Terlaris
 - Testimoni
+- Notifikasi admin 
+- Notifikasi Customer melalui email customer dan website
 
 ##Hak akses
 
@@ -24,10 +30,16 @@ Untuk mencoba menggunakan toko ini, gunakan dua browser yang berbeda untuk memud
 
 **Admin:**
 
-- Username: admin
+- Username: ropel2
 - Password: 12345
 
 **Customer:**
 
-- Username: customer
+- Username: ropel1
 - Password: 12345
+
+# Cara Instalasi Aplikasi
+1. Extract file pada folder htdocs xampp.
+2. Lalu buat database dengan nama penjualan.
+3. Import file database yang terdapat pada folder project.
+4. Lalu jalankan melalui Web Browser anda.

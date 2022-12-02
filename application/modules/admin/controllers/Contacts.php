@@ -84,7 +84,8 @@ class Contacts extends CI_Controller
         $this->email->message($message);
 
         if ($this->email->send()) {
-            echo "tqq";
+            $this->session->set_flashdata('success', 'Berhasil Membalas Pesan');
+            redirect(base_url('admin/contacts/view/' . $id));
         }
         $this->email->print_debugger(array('headers'));
     }

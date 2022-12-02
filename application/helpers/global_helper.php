@@ -316,8 +316,8 @@ if (!function_exists('get_income_perday')) {
     {
         $newdata1 = $data[0]->total_payment;
         $newdata2 = $data[1]->total_payment;
-        if (isset($data[0]->status)) {
-            if ($data[0]->status == '1hari') {
+        if (isset($data[0]->status) or isset($data[1]->status)) {
+            if ($data[1]->status == '2hari') {
                 $newdata2 = $data[0]->total_payment;
                 $newdata1 = $data[1]->total_payment;
             }
@@ -353,8 +353,8 @@ if (!function_exists('get_order_perday')) {
     {
         $newdata1 = $data[0]->total_order;
         $newdata2 = $data[1]->total_order;
-        if (isset($data[0]->status)) {
-            if ($data[0]->status == '1hari') {
+        if (isset($data[0]->status) or isset($data[1]->status)) {
+            if ($data[1]->status == '2hari') {
                 $newdata2 = $data[0]->total_order;
                 $newdata1 = $data[1]->total_order;
             }
@@ -372,14 +372,14 @@ if (!function_exists('get_order_perday')) {
             $persen = $newdata2 - $newdata1;
             return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
             <span class="text-success mr-2"><i class="fa fa-arrow-up"></i></span>
-            <span class="text-nowrap">Orderan Meningkat Sebanyak' . $persen . '</span>
+            <span class="text-nowrap">Orderan Meningkat Sebanyak ' . $persen . '</span>
             <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
           </p>';
         } else if ($newdata2 < $newdata1) {
             $persen = $newdata1 - $newdata2;
             return '<p class="mt-2 mb-0 text-sm" style="display:inline-block">
             <span class="text-danger mr-2"><i class="fa fa-arrow-down"></i></span>
-            <span class="text-nowrap">Orderan Menurun Sebanyak' . $persen . '</span>
+            <span class="text-nowrap">Orderan Menurun Sebanyak ' . $persen . '</span>
             <span class="text-nowrap ml-4">Dengan Hari Sebelumnya</span>
           </p>';
         }
@@ -390,8 +390,8 @@ if (!function_exists('get_income_perday_total')) {
     {
         $newdata1 = $data[0]->total_payment;
         $newdata2 = $data[1]->total_payment;
-        if (isset($data[0]->status)) {
-            if ($data[0]->status == '1hari') {
+        if (isset($data[0]->status) or isset($data[1]->status)) {
+            if ($data[1]->status == '2hari') {
                 $newdata2 = $data[0]->total_payment;
                 $newdata1 = $data[1]->total_payment;
             }
@@ -404,8 +404,8 @@ if (!function_exists('get_order_perday_total')) {
     {
         $newdata1 = $data[0]->total_order;
         $newdata2 = $data[1]->total_order;
-        if (isset($data[0]->status)) {
-            if ($data[0]->status == '1hari') {
+        if (isset($data[0]->status) or isset($data[1]->status)) {
+            if ($data[1]->status == '2hari') {
                 $newdata2 = $data[0]->total_order;
                 $newdata1 = $data[1]->total_order;
             }
@@ -446,6 +446,165 @@ if (!function_exists('get_contact_status')) {
             return 'Sudah dibaca';
         else if ($status == 3)
             return 'Sudah dibalas';
+    }
+}
+
+
+if (!function_exists('get_rating')) {
+    function get_rating($hasil, $total)
+    {
+        if ($hasil == 0) {
+            return '0.0';
+        }
+        $rating = $hasil / $total;
+        $res = (is_float($rating)) ? substr($rating, 0, 3) : $rating . '0';
+        return $res;
+    }
+}
+if (!function_exists('get_star_user')) {
+    function get_star_user($star)
+    {
+        switch ($star) {
+            case 1:
+                return '<p class="text-center" style="color:#D1D100;">
+                <i class="fa fa-star"></i>
+                </p>';
+                break;
+            case 2:
+                return '<p class="text-center" style="color:#D1D100;">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                </p>';
+                break;
+            case 3:
+                return '<p class="text-center" style="color:#D1D100;">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                </p>';
+                break;
+            case 4:
+                return '<p class="text-center" style="color:#D1D100;">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                </p>';
+                break;
+            case 5:
+                return '<p class="text-center" style="color:#D1D100;">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                </p>';
+                break;
+        }
+    }
+}
+if (!function_exists('get_star_review')) {
+    function get_star_review($hasil, $total)
+    {
+        if ($hasil == 0) {
+            return '<span class="ion-ios-star-outline"></span>
+            <span class="ion-ios-star-outline"></span>
+            <span class="ion-ios-star-outline"></span>
+            <span class="ion-ios-star-outline"></span>
+            <span class="ion-ios-star-outline"></span>';
+        }
+        $res = $hasil / $total;
+
+        switch ($res) {
+            case ($res < 1 && $res < 0.5):
+                return '
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 0.5 && $res < 1):
+                return '
+                <span class="ion-ios-star-half"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 1 && $res < 1.5):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 1.5 && $res < 2):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-half"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 2 && $res < 2.5):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 2.5 && $res < 3):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-half"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 3 && $res < 3.5):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-outline"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 3.5 && $res < 4):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-half"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 4 && $res < 4.5):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-outline"></span>';
+                break;
+            case ($res >= 4.5 && $res < 5):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star-half"></span>';
+                break;
+            case ($res == 5):
+                return '
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>
+                <span class="ion-ios-star"></span>';
+                break;
+        }
     }
 }
 if (!function_exists('is_read')) {

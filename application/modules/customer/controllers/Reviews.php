@@ -83,19 +83,20 @@ class Reviews extends CI_Controller
         $this->form_validation->set_rules('order_id', 'required|numeric');
         $this->form_validation->set_rules('review', 'Isi review', 'required');
 
-        if ($this->form_validation->run() === FALSE) {
+        if ($this->form_validation->run() === FALSE || $this->input->post('rating') == NULL) {
             $this->write();
         } else {
             $title = $this->input->post('title');
             $order = $this->input->post('order_id');
             $review = $this->input->post('review');
-
+            $rating = $this->input->post('rating');
             $data = array(
                 'user_id' => get_current_user_id(),
                 'title' => $title,
                 'order_id' => $order,
                 'review_text' => $review,
-                'review_date' => date('Y-m-d H:i:s')
+                'review_date' => date('Y-m-d H:i:s'),
+                'rating' => $rating
             );
 
             $id = $this->review->write_review($data);
@@ -111,6 +112,9 @@ class Reviews extends CI_Controller
             $data = $this->review->review_data($id);
 
             $params['title'] = 'Review Order #' . $data->order_number;
+            $params['total_notif'] = $this->payment->countnotif();
+            $params['notif'] = $this->payment->notifikasi();
+            $params['linkdata'] = $this->payment->linknotif();
 
             $review['review'] = $data;
 

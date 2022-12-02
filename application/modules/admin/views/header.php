@@ -6,6 +6,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title><?php echo $title; ?> | <?php echo get_store_name(); ?></title>
@@ -114,6 +115,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
               <a class="nav-link" href="<?php echo site_url('admin/customers'); ?>">
                 <i class="fa fa-users text-primary"></i>
                 <span class="nav-link-text">Pelanggan</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<?php echo site_url('admin/tables'); ?>">
+                <i class="fa fa-signal"></i>
+                <span class="nav-link-text">Laporan Penjualan</span>
               </a>
             </li>
             <li class="nav-item">

@@ -72,7 +72,6 @@ class Payments extends CI_Controller
     public function confirm()
     {
         $order = $this->input->get('order');
-        var_dump($this->session->userdata('get'));
         if ($this->session->userdata('get')) {
             $order = $this->session->userdata('get');
         } else {

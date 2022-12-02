@@ -33,22 +33,29 @@ class Customer_model extends CI_Model
 
     public function delete_customer($id)
     {
-        $this->db->query("SET FOREIGN_KEY_CHECKS=0;");
-        $this->db->where('user_id', $id)->delete('customers');
-        $this->db->where('id', $id)->delete('users');
-        $this->db->where('user_id', $id)->delete('orders');
-        $this->db->query("
-            DELETE order_item
-            FROM order_item
-            JOIN orders
-                ON orders.id = order_item.order_id
-            WHERE orders.user_id = '$id'");
-        $this->db->query("
+        $query = $this->db->query("SELECT * FROM orders where user_id ='$id'")->num_rows();
+        if ($query > 0) {
+
+            $this->db->query("SET FOREIGN_KEY_CHECKS=0;");
+            $this->db->where('user_id', $id)->delete('customers');
+            $this->db->where('id', $id)->delete('users');
+            $this->db->where('user_id', $id)->delete('orders');
+            $this->db->query("
+        DELETE order_item
+        FROM order_item
+        JOIN orders
+        ON orders.id = order_item.order_id
+        WHERE orders.user_id = '$id'");
+            $this->db->query("
             DELETE payments
             FROM payments
             INNER JOIN orders ON orders.id = payments.order_id
             WHERE orders.user_id = '$id'");
-        $this->db->query("DELETE orders FROM orders WHERE user_id = '$id'");
+            $this->db->query("DELETE orders FROM orders WHERE user_id = '$id'");
+        } else {
+            $this->db->where('user_id', $id)->delete('customers');
+            $this->db->where('id', $id)->delete('users');
+        }
     }
 
     public function is_customer_exist($id)

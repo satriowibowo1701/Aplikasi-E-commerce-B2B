@@ -25,7 +25,7 @@ class Register extends CI_Controller
         $this->form_validation->set_rules('name', 'Nama lengkap', 'required');
         $this->form_validation->set_rules('phone_number', 'No. HP', 'required|min_length[9]|max_length[16]|is_unique[customers.phone_number]');
         $this->form_validation->set_rules('email', 'Email', 'required|min_length[10]');
-        $this->form_validation->set_rules('address', 'Alamat', 'required');
+        $this->form_validation->set_rules('address', 'Alamat', 'required|is_unique[users.email]');
 
         if ($this->form_validation->run() === FALSE) {
             $this->index();

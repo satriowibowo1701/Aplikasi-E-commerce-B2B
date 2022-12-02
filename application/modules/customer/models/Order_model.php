@@ -114,10 +114,25 @@ class Order_model extends CI_Model
 
     public function all_orders()
     {
-        return $this->db->where(array('user_id' => $this->user_id))->where(array('payment_method' => 1, 'order_status' => 4))->or_where(array('user_id' => $this->user_id))->where(array('payment_method' => 2, 'order_status' => 3))->or_where(array('user_id' => $this->user_id))->where(array('payment_method' => 3, 'order_status' => 4))->order_by('order_date', 'DESC')->get('orders')->result();
+        $query = "SELECT o.* FROM orders o LEFT JOIN reviews r ON o.id=r.order_id WHERE r.order_id IS NULL AND o.user_id = '$this->user_id'  AND (o.payment_method = 1 OR o.payment_method = 3) AND o.order_status = 4 OR r.order_id IS NULL AND o.user_id = '$this->user_id' AND o.payment_method = 2 AND o.order_status = 3 ORDER BY o.order_date ASC";
+        $orders = $this->db->query($query);
+        return $orders->result();
     }
     public function updatenotifcancel($no_order)
     {
         $this->db->where('no_order', $no_order)->update('notifikasi', array('status' => 3));
+    }
+    public function search_orders($query, $limit, $start)
+    {
+        $products = $this->db->like('order_number', $query)->or_like('order_date', $query)->get('orders', $limit, $start)->result();
+
+        return $products;
+    }
+
+    public function count_search($query)
+    {
+        $count = $this->db->like('order_number', $query)->or_like('order_date', $query)->get('orders')->num_rows();
+
+        return $count;
     }
 }

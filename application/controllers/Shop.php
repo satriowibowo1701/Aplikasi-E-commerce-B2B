@@ -10,7 +10,8 @@ class Shop extends Email1
         $this->load->library('cart');
         $this->load->model(array(
             'product_model' => 'product',
-            'customer_model' => 'customer'
+            'customer_model' => 'customer',
+            'review_model' => 'review'
         ));
     }
 
@@ -21,9 +22,17 @@ class Shop extends Email1
         } else {
             if ($this->product->is_product_exist($id, $sku)) {
                 $data = $this->product->product_data($id);
-
+                $product['reviews'] = $this->review->get_all_reviewss($id);
+                $total = count($product['reviews']);
+                $total_rating = 0;
+                foreach ($product['reviews'] as $review) {
+                    $total_rating += $review->rating;
+                }
+                $product['totalreviews'] = $total;
+                $product['totalrating'] = $total_rating;
                 $product['product'] = $data;
                 $product['related_products'] = $this->product->related_products($data->id, $data->category_id);
+                $product['recomended'] = $this->product->product_recomended();
 
                 get_header($data->name . ' | ' . get_settings('store_tagline'));
                 get_template_part('shop/view_single_product', $product);
@@ -58,6 +67,7 @@ class Shop extends Email1
         }
         switch ($action) {
             default:
+
                 $ongkirr = $this->input->post('ongkir');
                 $coupon = $this->input->post('coupon_code') ? $this->input->post('coupon_code') : $this->session->userdata('_temp_coupon');
                 $quantity = $this->input->post('quantity') ? $this->input->post('quantity') : $this->session->userdata('_temp_quantity');
@@ -88,16 +98,25 @@ class Shop extends Email1
                 } else {
                     if ($this->customer->is_coupon_exist($coupon)) {
                         if ($this->customer->is_coupon_active($coupon)) {
-                            if ($this->customer->is_coupon_expired($coupon)) {
-                                $discount = 0;
-                                $disc = 'Kupon kadaluarsa';
-                            } else {
-                                $coupon_id = $this->customer->get_coupon_id($coupon);
-                                $this->session->set_userdata('coupon_id', $coupon_id);
 
-                                $credit = $this->customer->get_coupon_credit($coupon);
-                                $discount = $credit;
-                                $disc = '<span class="badge badge-success">' . $coupon . '</span> Rp ' . format_rupiah($credit);
+                            $iddd = get_current_user_id();
+                            $dataaa = $this->product->check_kupon($iddd);
+                            if ($dataaa < 2) {
+
+                                if ($this->customer->is_coupon_expired($coupon)) {
+                                    $discount = 0;
+                                    $disc = 'Kupon kadaluarsa';
+                                } else {
+                                    $coupon_id = $this->customer->get_coupon_id($coupon);
+                                    $this->session->set_userdata('coupon_id', $coupon_id);
+
+                                    $credit = $this->customer->get_coupon_credit($coupon);
+                                    $discount = $credit;
+                                    $disc = '<span class="badge badge-success">' . $coupon . '</span> Rp ' . format_rupiah($credit);
+                                }
+                            } else {
+                                $discount = 0;
+                                $disc = 'Kupon hanya bisa digunakan 1 kali';
                             }
                         } else {
                             $discount = 0;
@@ -133,6 +152,7 @@ class Shop extends Email1
                 $params['total'] = $subtotal + $ongkir - $discount;
                 $params['discount'] = $disc;
                 $params['userdata'] = $items;
+
 
                 $this->session->set_userdata('order_quantity', $items);
                 $this->session->set_userdata('total_price', $params['total']);

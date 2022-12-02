@@ -18,9 +18,11 @@ class Payment_model extends CI_Model
 
         return $this->db->select('SUM(total_price) as total_payment , DAY(order_date) day')
             ->where(array('order_status' => 4))
+            ->where("(payment_method=1 OR payment_method=3)", "", false)
             ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)', "", false)
-            ->or_where('payment_method', 2)->where(array('order_status' => 3))
-            ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY)', "", false)
+            ->or_where('payment_method', 2)
+            ->where(array('order_status' => 3))
+            ->where('order_date >= DATE_SUB(CAST(NOW() AS Date ), INTERVAL 1 DAY) GROUP BY DAY(order_date) ', "", false)
             ->get('orders')->result();
     }
 

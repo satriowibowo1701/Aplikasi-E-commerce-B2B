@@ -10,7 +10,7 @@ class Product_model extends CI_Model
 
     public function get_all_products()
     {
-        return $this->db->get('products')->result();
+        return $this->db->order_by('id', 'DESC')->get('products', 8)->result();
     }
 
     public function best_deal_product()
@@ -61,5 +61,49 @@ class Product_model extends CI_Model
     public function register_payment(array $data)
     {
         $this->db->insert('payments', $data);
+    }
+    public function product_recomended()
+    {
+        $query = "select p.* From orders o join order_items oi on o.id = oi.order_id join products p on oi.product_id = p.id WHERE o.order_status=4 AND (o.payment_method=1 OR o.payment_method=3) OR o.payment_method = 2 AND o.order_status = 3 group by p.name order by count(oi.order_qty) Desc LIMIT 8";
+        return $this->db->query($query)->result();
+    }
+    public function get_kategori()
+    {
+        return $this->db->get('product_category')->result();
+    }
+    public function get_produk_by_kategori($id)
+    {
+        return $this->db->where('category_id', $id)->get('products')->result();
+    }
+    public function search_product($keyword, $id)
+    {
+        if ($id != 'all') {
+            if ($keyword != '') {
+                return $this->db->where('category_id', $id)->like('name', $keyword)
+                    ->get('products')->result();
+            } else {
+                return $this->db->where('category_id', $id)->get('products')->result();
+            }
+        } else {
+            return $this->db->like('name', $keyword)
+                ->or_like('description', $keyword)
+                ->or_like('sku', $keyword)
+                ->or_like('price', $keyword)
+                ->or_like('current_discount', $keyword)
+                ->get('products')->result();
+        }
+    }
+    public function get_alll_products()
+    {
+        return $this->db->order_by('id', 'DESC')->get('products')->result();
+    }
+    public function get_data_slider()
+    {
+        $data = $this->db->get_where('settings', array('key' => 'slider'))->row()->content;
+        return json_decode($data, true);
+    }
+    public function check_kupon($id)
+    {
+        return $this->db->query("SELECT count(o.coupon_id) as jumlah FROM users u JOIN orders o on u.id=o.user_id WHERE u.id='$id' ")->row()->jumlah;
     }
 }

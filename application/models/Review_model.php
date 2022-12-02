@@ -27,6 +27,25 @@ class Review_model extends CI_Model
         return $reviews->result();
     }
 
+    public function get_all_reviewss($id)
+    {
+        $reviews = $this->db->query("
+            SELECT r.*, c.*
+            FROM reviews r
+            JOIN customers c
+                ON c.user_id = r.user_id
+                Join order_items oi
+                ON r.order_id = oi.order_id
+                Join products p
+                ON oi.product_id = p.id
+                WHERE p.id = '$id'
+                
+        ");
+
+        return $reviews->result();
+    }
+
+
     public function is_review_exist($id)
     {
         return ($this->db->where('id', $id)->get('reviews')->num_rows() > 0) ? TRUE : FALSE;
@@ -46,7 +65,6 @@ class Review_model extends CI_Model
     }
     public function notifikasi(array $data)
     {
-        $this->db->insert('',$data);
-
+        $this->db->insert('', $data);
     }
 }

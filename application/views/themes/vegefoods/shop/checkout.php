@@ -2,7 +2,7 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 ?>
 
-<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-ZjOMzX2eoqwyjxmY"></script>
+<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?= get_settings('client_key') ?>"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <div class="hero-wrap hero-bread" style="background-image: url('<?php echo get_theme_uri('images/bg_10.jpg'); ?>');">
     <div class="container">
@@ -32,6 +32,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                         <input type="text" name="name" value="<?php echo $customer->name; ?>" class="form-control" id="name" required>
                         <input type="hidden" class="orderid" name="orderid" value="<?php echo $orderid; ?>">
                         <input type="hidden" name="total" id="tot" value="<?= $total; ?>">
+
 
                         <?php
                         // var_dump($userdata);
@@ -79,6 +80,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
                                 <p class="d-flex">
                                     <span>Kupon</span>
                                     <span><?php echo $discount; ?></span>
+                                    <input type="hidden" id="kupon" value="<?= $ongkirr ?>">
                                 </p>
                                 <hr>
                                 <p class="d-flex total-price">

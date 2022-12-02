@@ -22,7 +22,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <script src="<?php echo get_theme_uri('vendor/jquery.scrollbar/jquery.scrollbar.min.js', 'argon'); ?>"></script>
 <script src="<?php echo get_theme_uri('vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js', 'argon'); ?>"></script>
 <!-- Argon JS -->
-<script src="<?php echo get_theme_uri('plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js', 'argon'); ?>"></script>
+<script src="<?php echo get_theme_uri('vendor/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js', 'argon'); ?>"></script>
 <script src="<?php echo get_theme_uri('js/argon9f1e.js?v=1.1.0', 'argon'); ?>"></script>
 <script>
   var timer = () => {
@@ -40,7 +40,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
         var d = Math.floor(diff % (1000 * 60 * 60 * 24 * 365) / (1000 * 60 * 60 * 24));
         var h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        console.log(m, h, d)
         if (h > 0 && h <= 24 && d == 0 && d == 0) {
           $(`.time${i}`).html(`<small><i class="fa fa-clock">${h} Jam Yang Lalu</i></small>`);
         } else if (d > 0 && d <= 365) {

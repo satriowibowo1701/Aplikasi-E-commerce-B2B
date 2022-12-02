@@ -31,8 +31,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
         <div class="card">
           <div class="card-header">
             <h3 class="mb-0">Data Kontak</h3>
-            <?php if ($flash) : ?>
-              <span class="float-right text-success font-weight-bold" style="margin-top: -30px;"><?php echo $flash; ?></span>
+            <?php if ($this->session->flashdata('success')) : ?>
+              <span class="float-right text-success font-weight-bold" style="margin-top: -30px;"><?php echo $this->session->flashdata('success'); ?></span>
             <?php endif; ?>
           </div>
           <div class="card-body p-0">

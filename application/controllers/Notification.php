@@ -23,10 +23,11 @@ class Notification extends Email3
 	public function __construct()
 	{
 		parent::__construct();
-		$params = array('server_key' => 'SB-Mid-server-SncqFmlAhQF1Or6Wd8rsoLuw', 'production' => false);
+		$params = array('server_key' => get_settings('server_key'), 'production' => false);
 		$this->load->library('veritrans');
 		$this->veritrans->config($params);
 		$this->load->helper('url');
+		$this->load->model('customer_model');
 	}
 
 	public function index()

@@ -67,9 +67,11 @@ class Products extends CI_Controller
 
         $params['title'] = 'Cari "' . $query . '"';
         $params['query'] = $query;
-
+        $params['total_notif'] = $this->payment->countnotif();
+        $params['notif'] = $this->payment->notifikasi();
+        $params['linkdata'] = $this->payment->linknotif();
         $config['base_url'] = site_url('admin/products/search');
-        $config['total_rows'] = $this->product->count_all_products();
+        $config['total_rows'] = $this->product->count_search($query);
         $config['per_page'] = 16;
         $config['uri_segment'] = 4;
         $choice = $config['total_rows'] / $config['per_page'];
@@ -362,6 +364,7 @@ class Products extends CI_Controller
                 $response = $data;
                 break;
             case 'add_category':
+
                 $name = $this->input->post('name');
 
                 $this->product->add_category($name);

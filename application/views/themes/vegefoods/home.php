@@ -3,13 +3,13 @@ defined('BASEPATH') or exit('No direct script access allowed');
 ?>
 <section id="home-section" class="hero">
   <div class="home-slider owl-carousel">
-    <div class="slider-item" style="background-image: url(<?php echo get_theme_uri('images/bg_11.jpg'); ?>);">
+    <div class="slider-item" style="background-image: url(<?php echo get_theme_uri('images/' . $slider[0]['gambar']); ?>);">
       <div class="overlay"></div>
       <div class="container">
         <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
 
           <div class="col-md-12 ftco-animate text-center">
-            <h1 class="mb-2">healthy people dessert</h1>
+            <h1 class="mb-2"><?= $slider[0]['konten'] ?></h1>
             <h2 class="subheading mb-4">makanan yang sehat tanpa bahan pengawet</h2>
             <p><a href="#products" class="btn btn-primary">Belanja Sekarang</a></p>
           </div>
@@ -18,26 +18,26 @@ defined('BASEPATH') or exit('No direct script access allowed');
       </div>
     </div>
 
-    <div class="slider-item" style="background-image: url(<?php echo get_theme_uri('images/bg_5.jpg'); ?>);">
+    <div class="slider-item" style="background-image: url(<?php echo get_theme_uri('images/' . $slider[1]['gambar']); ?>);">
       <div class="overlay"></div>
       <div class="container">
         <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
 
           <div class="col-sm-12 ftco-animate text-center">
-            <h1 class="mb-2">Kami Menjual Makanan Penutup Bergiji </h1>
+            <h1 class="mb-2"><?= $slider[1]['konten'] ?></h1>
             <h2 class="subheading mb-4">makanan yang sehat tanpa bahan pengawet</h2>
             <p><a href="#products" class="btn btn-primary">Belanja Sekarang</a></p>
           </div>
         </div>
       </div>
     </div>
-    <div class="slider-item" style="background-image: url(<?php echo get_theme_uri('images/bg_4.jpg'); ?>);">
+    <div class="slider-item" style="background-image: url(<?php echo get_theme_uri('images/' . $slider[2]['gambar']); ?>);">
       <div class="overlay"></div>
       <div class="container">
         <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
 
           <div class="col-sm-12 ftco-animate text-center">
-            <h1 class="mb-2">100% makanan bergiji dan sehat </h1>
+            <h1 class="mb-2"><?= $slider[2]['konten'] ?> </h1>
             <h2 class="subheading mb-4">makanan yang sehat tanpa bahan pengawet</h2>
             <p><a href="#products" class="btn btn-primary">Belanja Sekarang</a></p>
           </div>
@@ -117,7 +117,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
           <div class="col-md-2 col-lg-3 ftco-animate">
             <div class="product">
               <a href="<?php echo site_url('shop/product/' . $product->id . '/' . $product->sku . '/'); ?>" class="img-prod">
-                <img class="img-fluid" src="<?php echo base_url('assets/uploads/products/' . $product->picture_name); ?>" alt="<?php echo $product->name; ?>">
+                <div class="box">
+                  <img class="img-fluid" src="<?php echo base_url('assets/uploads/products/' . $product->picture_name); ?>" alt="<?php echo $product->name; ?>" style="height:200px; width:600px;">
+                </div>
                 <?php if ($product->current_discount > 0) : ?>
                   <span class="status"><?php echo count_percent_discount($product->current_discount, $product->price, 0); ?>%</span>
                 <?php endif; ?>
@@ -157,9 +159,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
   </div>
 </section>
 
-<section class="ftco-section img" style="background-image: url(<?php echo get_theme_uri('images/bg_3.jpg'); ?>);">
+<section class="ftco-section ">
   <div class="container">
-    <div class="row justify-content-end">
+    <div class="row">
+      <div class="col-md-6 ftco-animate">
+        <img src="<?php echo get_theme_uri('../../uploads/products/' . $best_deal->picture_name);  ?>" alt="" style="height:500px; width:100%;">
+      </div>
       <div class="col-md-6 heading-section ftco-animate deal-of-the-day ftco-animate">
         <span class="subheading">Produk dengan Harga Terbaik</span>
         <h2 class="mb-4">Deal of the day</h2>
@@ -171,7 +176,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <a href="#" class="btn btn-primary add-cart" data-sku="<?php echo $best_deal->sku; ?>" data-name="<?php echo $best_deal->name; ?>" data-price="<?php echo ($best_deal->current_discount > 0) ? ($best_deal->price - $best_deal->current_discount) : $best_deal->price; ?>" data-id="<?php echo $best_deal->id; ?>"><i class="ion-ios-cart"></i></a>
           </div>
           <div class="time pl-3">
-            <a class="btn btn-info" href="<?php echo site_url('shop/product/' . $product->id . '/' . $product->sku . '/'); ?>" class="buy-now d-flex justify-content-center align-items-center text-center">
+            <a class="btn btn-info" href="<?php echo site_url('shop/product/' . $best_deal->id . '/' . $best_deal->sku . '/'); ?>" class="buy-now d-flex justify-content-center align-items-center text-center">
               <span><i class="ion-ios-menu text-white"></i></span>
             </a>
           </div>

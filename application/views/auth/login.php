@@ -42,6 +42,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
                 Silahkan login untuk melanjutkan...
             </div>
         <?php endif; ?>
+        <?php if ($this->session->flashdata('success1')) { ?>
+            <div class="flash-message">
+                <?php echo $this->session->flashdata('success1'); ?>
+            </div>
+
+        <?php } ?>
 
         <?php echo form_open('auth/login/do_login'); ?>
 
@@ -62,8 +68,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
             <?php echo form_error('password'); ?>
         </div>
         <div class="forgot">
-            <!-- <?php echo anchor('auth/forget-password', 'Lupa password?'); ?> -->
             <p><input type="checkbox" name="remember_me" value="1">Ingat saya</p>
+            <?php echo anchor('auth/forgot', 'Lupa password?'); ?>
         </div>
         <button type="submit">Login</button>
         <?php echo form_close(); ?>

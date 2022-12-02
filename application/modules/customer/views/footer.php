@@ -13,20 +13,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 <script src="<?php echo get_theme_uri('js/jquery-2.2.3.min.js', 'adminlte'); ?>"></script>
 <script src="<?php echo get_theme_uri('js/jquery.slimscroll.min.js', 'adminlte'); ?>"></script>
 <script src="<?php echo get_theme_uri('js/app.min.js', 'adminlte'); ?>"></script>
-<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
-<script>
-  // Enable pusher logging - don't include this in production
-  Pusher.logToConsole = true;
 
-  var pusher = new Pusher('b28d4dddd82d250356b4', {
-    cluster: 'ap1'
-  });
-
-  var channel = pusher.subscribe('my-channel');
-  channel.bind('my-event', function(data) {
-    alert(JSON.stringify(data));
-  });
-</script>
 <script>
   const pol1 = $('.sukses').data('sukses');
   if (pol1) {
@@ -121,16 +108,22 @@ defined('BASEPATH') or exit('No direct script access allowed');
         if (diff < 0) {
           $('.waktu').html('Waktu Pembayaran Anda : 00:00:00');
           var name = $('#cusname').val();
-          $.ajax({
-            method: 'POST',
-            url: '<?php echo site_url('customer/orders/order_api?action=cancel_order'); ?>',
-            data: {
-              id: <?php echo $_GET['order']; ?>,
-              name: name,
+          <?php if (isset($_GET['order'])) { ?>
+            $.ajax({
+              method: 'POST',
+              url: '<?php echo site_url('customer/orders/order_api?action=cancel_order'); ?>',
+              data: {
+                id: <?php
+                    echo $_GET['order'];
+                    ?>,
+                name: name,
 
-            },
-            success: function(res) {}
-          });
+              },
+              success: function(res) {
+
+              }
+            });
+          <?php } ?>
 
         }
 
